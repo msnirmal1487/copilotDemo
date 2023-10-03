@@ -58,13 +58,41 @@
         function Header3() {
             return <h3>Hello World (as a React component function)</h3>;
         }
+        // React H3 component that accepts a prop for title
+        function Header3WithProps(props) {
+            // print props to console
+            console.log(props);
+            // return a h3 element with the title prop
+            return <h3>{props.title}</h3>;
+        }
+        // React H3 component that accepts a prop for title
+        function Header3WithPropsDestructuringAndDefaultTitle({title}) {
+            // return a h3 element with the title prop
+            return <h3>{title ? title : 'Default Title'}</h3>;
+        }
+
+
         // Nest the h1, h2 and Header3 elements inside a div and render the div inside the app div
         function HomePage() {
+            const loopThrough = ["loop", "through", "this", "array"]
             return (
                 <div>
                     {h1}
                     {h2}
                     <Header3 />
+                    <Header3WithProps title="Title passed as prop (child to parent)" />
+                    <Header3WithPropsDestructuringAndDefaultTitle />
+                    <Header3WithPropsDestructuringAndDefaultTitle title='destructuring'/>
+                    <ul>
+                        {loopThrough.map((item, index) => {
+                            return <li key={index}>{item}</li>
+                        })}
+                    </ul>
+                    <ul>
+                        {loopThrough.map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
+                    </ul>
                 </div>
             );
         }
