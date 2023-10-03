@@ -1,0 +1,84 @@
+<!-- empty html document -->
+<!-- <!DOCTYPE html> -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <!-- div with id app -->
+    <div id="app"></div>
+    <!-- react cdn -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.6/umd/react.development.js"></script>
+    <!-- react-dom cdn -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.6/umd/react-dom.development.js"></script>
+    <!-- babel cdn -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+
+    <!-- script -->
+    <script type="text/javascript">
+        // get the app div
+        // const app = document.getElementById('app');
+        // Render h1 element inside the app div
+        // ReactDOM.render(
+        //     React.createElement('h1', null, 'Hello World'),
+        //     app
+        // );
+
+        // Render h1 element inside the app div
+        // ReactDOM.render(
+        //     <h1>Hello World</h1>,
+        //     app
+        // );
+
+    </script>
+
+    <!-- script -->
+    <script type="text/babel">
+        // get the app div
+        const app = document.getElementById('app');
+
+        // Render h1 element inside the app div
+        // ReactDOM.render(
+        //     React.createElement('h1', null, 'Hello World'),
+        //     app
+        // );
+
+        // Render h2 element inside the app div (babel / JSX syntax)
+        // ReactDOM.render(
+        //     <h2>Hello World</h2>,
+        //     app
+        // );
+
+        // Create h1 and h2 elements, save them to variables and render them inside the app div
+        const h1 = React.createElement('h1', null, 'Hello World');
+        const h2 = <h2>Hello World (babel / JAX syntax)</h2>;
+        // React component that returns a h3 element
+        function Header3() {
+            return <h3>Hello World (as a React component function)</h3>;
+        }
+        // Nest the h1, h2 and Header3 elements inside a div and render the div inside the app div
+        function HomePage() {
+            return (
+                <div>
+                    {h1}
+                    {h2}
+                    <Header3 />
+                </div>
+            );
+        }
+
+
+        ReactDOM.render(
+            <HomePage />,
+            app
+        );
+    </script>
+
+
+
+</body>
+</html>
+
+
