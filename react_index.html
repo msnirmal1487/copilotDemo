@@ -74,9 +74,13 @@
 
         // Nest the h1, h2 and Header3 elements inside a div and render the div inside the app div
         function HomePage() {
+            // use state
+            const [likes, setLikes] = React.useState(0);
+
             const loopThrough = ["loop", "through", "this", "array"]
             function handleClick() {
-                console.log('Increment Like count');
+                setLikes(likes + 1);
+                console.log('Increment Like count to '+ likes);
             }
             return (
                 <div>
@@ -97,7 +101,7 @@
                         ))}
                     </ul>
 
-                    <button onClick={handleClick}>Like</button>
+                    <button onClick={handleClick}>Like({likes})</button>
                 </div>
             );
         }
