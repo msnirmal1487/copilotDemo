@@ -75,6 +75,9 @@
         // Nest the h1, h2 and Header3 elements inside a div and render the div inside the app div
         function HomePage() {
             const loopThrough = ["loop", "through", "this", "array"]
+            function handleClick() {
+                console.log('Increment Like count');
+            }
             return (
                 <div>
                     {h1}
@@ -93,6 +96,8 @@
                             <li key={index}>{item}</li>
                         ))}
                     </ul>
+
+                    <button onClick={handleClick}>Like</button>
                 </div>
             );
         }
