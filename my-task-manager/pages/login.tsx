@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-
-interface LoginData {
-    email: string;
-    password: string;
-}
+import { LoginData, AuthService } from '@/utils/auth.service';
 
 const Login = () => {
     const router = useRouter();
@@ -19,26 +15,16 @@ const Login = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log(loginData);
-        // make API call to login
-        try {
-            const response = await fetch('http://localhost:3001/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginData),
-            });
 
-            console.log(response);
-            if(response.ok) {
-                router.push('/home');
-            } else {
-                console.log('Login failed');
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        
         // if success, redirect to home page
+        const authService = new AuthService();
+        const user = await authService.login(loginData);
+        if (user) {
+            router.push('/home');
+        } else {
+            alert('Login failed');
+        }
 
     };
 
