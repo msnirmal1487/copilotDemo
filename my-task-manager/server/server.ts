@@ -11,7 +11,7 @@ app.use(e.json());
 
 import { Response } from 'express';
 
-app.get('/api/login', (req: { body: LoginData; }, res: Response<User | any>) => {
+app.post('/api/login', (req: { body: LoginData; }, res: Response<User | any>) => {
 
     const loginData = req.body as LoginData;
     const user = authService.login(loginData.email, loginData.password);
