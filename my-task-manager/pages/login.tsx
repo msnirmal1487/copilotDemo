@@ -2,10 +2,15 @@ import { useState } from 'react';
 import { Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { LoginData, AuthService } from '@/utils/auth.service';
+import { useUser } from '@/contexts/UserContext';
+
+const authService = new AuthService();
 
 const Login = () => {
     const router = useRouter();
     const [loginData, setLoginData] = useState<LoginData>({ email: '', password: '' });
+    const [error, setError] = useState<string>('');
+    const { user, setUser } = useUser();
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -14,16 +19,18 @@ const Login = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(loginData);
+        if(!loginData.email || !loginData.password) {
+            setError('Email and password are required');
+            return;
+        }
 
-        
         // if success, redirect to home page
-        const authService = new AuthService();
         const user = await authService.login(loginData);
         if (user) {
+            setUser(user);
             router.push('/home');
         } else {
-            alert('Login failed');
+            setError('Login failed');
         }
 
     };
@@ -61,6 +68,7 @@ const Login = () => {
                             value={loginData.password}
                             onChange={handleInputChange}
                         />
+                        {error && <Typography color="error">{error}</Typography>}
                         <Button variant="contained" color="primary" type="submit">
                             Login
                         </Button>
