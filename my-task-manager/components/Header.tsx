@@ -1,13 +1,10 @@
 import { useUser } from "@/contexts/UserContext";
-import { AppBar, Button, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem, Toolbar, Typography } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { useRouter } from "next/router";
-import { SetStateAction, useEffect, useState } from "react";
+import { AppBar, IconButton, MenuItem, Toolbar, Typography } from '@mui/material';
 import Menu from '@mui/material/Menu';
-import { isSmallScr } from '../utils/screenSize';
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import NavigationDrawer from './NavigationDrawer';
 
 const Header = () => {
     const router = useRouter();
@@ -47,6 +44,7 @@ const Header = () => {
     return (
         <AppBar position="static">
             <Toolbar>
+                <NavigationDrawer />
                 <Typography variant="h6" style={{ flexGrow: 1 }}>
                     My App
                 </Typography>
