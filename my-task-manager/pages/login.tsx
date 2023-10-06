@@ -3,6 +3,7 @@ import { Button, Card, CardContent, TextField, Typography } from '@mui/material'
 import { useRouter } from 'next/router';
 import { LoginData, AuthService } from '@/utils/auth.service';
 import { useUser } from '@/contexts/UserContext';
+import Footer from '@/components/Footer';
 
 const authService = new AuthService();
 
@@ -36,7 +37,7 @@ const Login = () => {
     };
 
     const handleGoBackClick = () => {
-        router.back();
+        router.push('/');
     };
 
     return (
@@ -79,6 +80,7 @@ const Login = () => {
                 </form>
 
             </Card>
+            <Footer />
         </div>
     );
 };

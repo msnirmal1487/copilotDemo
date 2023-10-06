@@ -13,12 +13,8 @@ const Header = () => {
 
     useEffect(() => {
         if (!user) {
-            console.log('no user');
-            // router.push('/login');
-        } else {
-            console.log(user);
+            router.push('/login');
         }
-
     }
         , [user, setUser]);
 

@@ -1,4 +1,5 @@
 // import button and Typograpgy from mateiral ui
+import Footer from "@/components/Footer";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
@@ -25,6 +26,7 @@ const home = () => {
                     <Button variant="outlined" onClick={handleRegisterClick}>Register</Button>
                 </CardContent>
             </Card>
+            <Footer />
         </div>
     );
 };
