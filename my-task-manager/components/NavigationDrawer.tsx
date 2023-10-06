@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Typography, Divider } from '@mui/material';
 import { isSmallScr } from '../utils/screenSize';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
@@ -32,7 +32,13 @@ const NavigationDrawer = () => {
 
   return (
     <NoSsr>
-      <Drawer variant={isSmallScreen ? "temporary" : "permanent"} anchor="left" open={openDrawer} onClose={handleDrawerClose}>
+      <Drawer anchor="left" open={openDrawer} onClose={handleDrawerClose}>
+        <div style={{backgroundColor: '#0070f3'}}>
+        <Typography variant="h6" sx={{ my: 2, color: '#fff' }}>
+        My Task
+        </Typography>
+        </div>
+        <Divider />
         <List>
           <ListItem button onClick={handleDrawerClose}>
             <ListItemIcon>
@@ -48,11 +54,9 @@ const NavigationDrawer = () => {
           </ListItem>
         </List>
       </Drawer>
-      {isSmallScr() && (
-        <IconButton color="inherit" onClick={handleDrawerOpen}>
+      <IconButton color="inherit" onClick={handleDrawerOpen}>
           <MenuIcon />
         </IconButton>
-      )}
     </NoSsr>
   );
 };
