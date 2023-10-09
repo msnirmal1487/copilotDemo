@@ -1,4 +1,6 @@
 import Footer from "@/components/Footer";
+import { useUser } from "@/contexts/UserContext";
+import { AuthService, RegisterData } from "@/utils/auth.service";
 import { Typography, TextField, Card, CardContent, Button } from "@mui/material";
 import router from "next/router";
 import { useEffect, useState } from "react";
@@ -7,6 +9,9 @@ interface ErrorData {
     error: string;
     isDirty: boolean;
 }
+
+const authService = new AuthService();
+
 export default function Register() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -19,6 +24,9 @@ export default function Register() {
     const [passwordConfirmationErrorData, setPasswordConfirmationErrorData] = useState<ErrorData>({ error: "", isDirty: false });
 
     const [isFormValid, setIsFormValid] = useState(false);
+
+    const [error, setError] = useState<string>('');
+    const { user, setUser } = useUser();
 
 
     const isNameValid = (name: string) => {
@@ -145,9 +153,19 @@ export default function Register() {
         }
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log('submit');
+        const registerData: RegisterData = { name, email, password};
+        console.log(registerData)
+
+        const user = await authService.register(registerData);
+        if (user) {
+            setUser(user);
+            router.push('/home');
+        } else {
+            setError('Register failed');
+        }
     }
 
     const handleGoBackClick = () => {
@@ -210,6 +228,7 @@ export default function Register() {
                             error={Boolean(passwordConfirmationErrorData.error)}
                             helperText={passwordConfirmationErrorData.error}
                         />
+                        {error && <Typography color="error">{error}</Typography>}
                         <Button variant="contained" color="primary" type="submit" disabled={!isFormValid}>
                             Register
                         </Button>

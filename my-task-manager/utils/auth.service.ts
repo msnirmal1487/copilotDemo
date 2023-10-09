@@ -10,8 +10,14 @@ export interface User {
     email: string;
 }
 
+export interface RegisterData {
+    name: string;
+    email: string;
+    password: string;
+}
+
 export class AuthService {
-  // ...
+  
   async login(loginData: LoginData): Promise<User | undefined> {
     // make API call to login
     try {
@@ -34,5 +40,28 @@ export class AuthService {
         return undefined;
     }
   }
-  // ...
+
+  async register(registerData: RegisterData): Promise<User | undefined> {
+    // make API call to register
+    try {
+        const response = await fetch('http://localhost:3001/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registerData),
+        });
+        
+        if(!response.ok) {
+            return undefined;
+        } else {
+            const user = await response.json();
+            return user;
+        }
+
+    } catch (error) {
+        return undefined;
+    }
+  }
+
 }
