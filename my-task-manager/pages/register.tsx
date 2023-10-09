@@ -3,20 +3,22 @@ import { Typography, TextField, Card, CardContent, Button } from "@mui/material"
 import router from "next/router";
 import { useEffect, useState } from "react";
 
+interface ErrorData {
+    error: string;
+    isDirty: boolean;
+}
 export default function Register() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
-    const [nameError, setNameError] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const [passwordConfirmationError, setPasswordConfirmationError] = useState("");
+
+    const [nameErrorData, setNameErrorData] = useState<ErrorData>({ error: "", isDirty: false });
+    const [emailErrorData, setEmailErrorData] = useState<ErrorData>({ error: "", isDirty: false });
+    const [passwordErrorData, setPasswordErrorData] = useState<ErrorData>({ error: "", isDirty: false });
+    const [passwordConfirmationErrorData, setPasswordConfirmationErrorData] = useState<ErrorData>({ error: "", isDirty: false });
+
     const [isFormValid, setIsFormValid] = useState(false);
-    const [isNameDirty, setIsNameDirty] = useState(false);
-    const [isEmailDirty, setIsEmailDirty] = useState(false);
-    const [isPasswordDirty, setIsPasswordDirty] = useState(false);
-    const [isPasswordConfirmationDirty, setIsPasswordConfirmationDirty] = useState(false);
 
 
     const isNameValid = (name: string) => {
@@ -25,10 +27,10 @@ export default function Register() {
 
     const checkName = (name: string) => {
         if (!isNameValid(name)) {
-            setNameError("Name must be at least 2 characters");
+            setNameErrorData(prevState => ({ ...prevState, error: "Name must be at least 2 characters"}));
             return false;
         } else {
-            setNameError("");
+            setNameErrorData(prevState => ({ ...prevState, error: ""}));
             return true;
         }
     }
@@ -39,10 +41,10 @@ export default function Register() {
 
     const checkEmail = (email: string) => {
         if (!isValidEmail(email)) {
-            setEmailError("Please Enter a Valid Email");
+            setEmailErrorData(prevState => ({ ...prevState, error: "Please Enter a Valid Email"}));
             return false;
         } else {
-            setEmailError("");
+            setEmailErrorData(prevState => ({ ...prevState, error: ""}));
             return true;
         }
     }
@@ -53,10 +55,10 @@ export default function Register() {
 
     const checkPassword = (password: string) => {
         if (!isValidPassword(password)) {
-            setPasswordError("Password must be at least 6 characters");
+            setPasswordErrorData(prevState => ({ ...prevState, error: "Password must be at least 6 characters"}));
             return false;
         } else {
-            setPasswordError("");
+            setPasswordErrorData(prevState => ({ ...prevState, error: ""}));
             return true;
         }
     }
@@ -67,10 +69,10 @@ export default function Register() {
 
     const checkPasswordConfirmation = (password: string, passwordConfirmation: string) => {
         if (!isValidPasswordConfirmation(password, passwordConfirmation)) {
-            setPasswordConfirmationError("Confirm Password must match password");
+            setPasswordConfirmationErrorData(prevState => ({ ...prevState, error: "Confirm Password must match password"}));
             return false;
         } else {
-            setPasswordConfirmationError("");
+            setPasswordConfirmationErrorData(prevState => ({ ...prevState, error: ""}));
             return true;
         }
     }
@@ -86,31 +88,30 @@ export default function Register() {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        console.log(name, value);
-        // setName(prevState => ({ value }));
+
 
         switch (name) {
             case "name":
                 setName(value);
-                if (isNameDirty) {
+                if (nameErrorData.isDirty) {
                     checkName(value);
                 }
                 break;
             case "email":
                 setEmail(value);
-                if (isEmailDirty) {
+                if (emailErrorData.isDirty) {
                     checkEmail(value);
                 }
                 break;
             case "password":
                 setPassword(value);
-                if (isPasswordDirty) {
+                if (passwordErrorData.isDirty) {
                     checkPassword(value);
                 }
                 break;
             case "passwordConfirmation":
                 setPasswordConfirmation(value);
-                if (isPasswordConfirmationDirty) {
+                if (passwordConfirmationErrorData.isDirty) {
                     checkPasswordConfirmation(password, value);
                 }
                 break;
@@ -121,25 +122,23 @@ export default function Register() {
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        console.log(name, value);
-        // setName(prevState => ({ value }));
 
         switch (name) {
             case "name":
                 checkName(value);
-                setIsNameDirty(true);
+                setNameErrorData(prevState => ({ ...prevState, isDirty: true }));
                 break;
             case "email":
                 checkEmail(value);
-                setIsEmailDirty(true);
+                setEmailErrorData(prevState => ({ ...prevState, isDirty: true }));
                 break;
             case "password":
                 checkPassword(value);
-                setIsPasswordDirty(true);
+                setPasswordErrorData(prevState => ({ ...prevState, isDirty: true }));
                 break;
             case "passwordConfirmation":
                 checkPasswordConfirmation(password, value);
-                setIsPasswordConfirmationDirty(true);
+                setPasswordConfirmationErrorData(prevState => ({ ...prevState, isDirty: true }));
                 break;
             default:
                 break;
@@ -173,8 +172,8 @@ export default function Register() {
                             value={name}
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            error={Boolean(nameError)}
-                            helperText={nameError}
+                            error={Boolean(nameErrorData.error)}
+                            helperText={nameErrorData.error}
                         />
                         <TextField
                             label="Email"
@@ -184,8 +183,8 @@ export default function Register() {
                             value={email}
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            error={Boolean(emailError)}
-                            helperText={emailError}
+                            error={Boolean(emailErrorData.error)}
+                            helperText={emailErrorData.error}
                         />
                         <TextField
                             label="Password"
@@ -196,8 +195,8 @@ export default function Register() {
                             type="password"
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            error={Boolean(passwordError)}
-                            helperText={passwordError}
+                            error={Boolean(passwordErrorData.error)}
+                            helperText={passwordErrorData.error}
                         />
                         <TextField
                             label="Confirm Password"
@@ -208,8 +207,8 @@ export default function Register() {
                             type="password"
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            error={Boolean(passwordConfirmationError)}
-                            helperText={passwordConfirmationError}
+                            error={Boolean(passwordConfirmationErrorData.error)}
+                            helperText={passwordConfirmationErrorData.error}
                         />
                         <Button variant="contained" color="primary" type="submit" disabled={!isFormValid}>
                             Register
