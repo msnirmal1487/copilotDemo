@@ -1,5 +1,9 @@
 
 const fs = require('fs');
+import * as crypto from 'crypto';
+import { format } from "date-fns";
+
+export const DATE_FORMAT: string = 'yyyy/MM/dd HH:mm:ss z';
 
 export interface UserFile {
     users: User[];
@@ -10,6 +14,8 @@ export interface User {
     name: string;
     email: string;
     password: string;
+    uniqueIdString: string;
+    createdAt: string;
 }
 
 export interface LoginData {
@@ -27,8 +33,12 @@ export const authService: AuthService = {
     login
 };
 
-function readUsers(): UserFile {
-    const data = fs.readFileSync('./server/users.json', 'utf8');
+function readUsers(): UserFile | null {
+    const filePath = './server/users.json';
+    if (!fs.existsSync(filePath)) {
+        return null;
+    }
+    const data = fs.readFileSync(filePath, 'utf8');
     const users = JSON.parse(data);
     return users;
 };
@@ -44,7 +54,15 @@ function register(user: User): User | undefined {
     if(index !== -1) {
         return undefined;
     }
+    user.createdAt = format(new Date(), DATE_FORMAT);
+    let uniqueId = crypto.randomBytes(16).toString('hex');
+    while(users.findIndex((u: User) => { return u.uniqueIdString === uniqueId; }) >= 0){
+        uniqueId = crypto.randomBytes(16).toString('hex');
+    } 
+    
+    user.uniqueIdString = uniqueId;
     user.id = users.length + 1; 
+
     users.push(user);
     const data = JSON.stringify(userFile);
     fs.writeFileSync('./server/users.json', data);

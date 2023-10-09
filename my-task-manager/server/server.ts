@@ -33,6 +33,10 @@ app.post('/api/register', (req: { body: User; }, res: Response<User|any>) => {
     }
 });
 
+app.get('/api/user/:id/tasks', (req: { params: { id: string; }; }, res: Response<User | any>) => {
+    
+});
+
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });

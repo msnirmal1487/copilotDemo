@@ -16,6 +16,8 @@ const home = () => {
             {user && <p>Welcome {user.name}</p>}
             {user && <p>{user.id}</p>}
             {user && <p>{user.email}</p>}
+            {user && <p>{user.uniqueIdString}</p>}
+            {user && <p>{user.createdAt}</p>}
             <Footer />
         </div>
     );

@@ -8,6 +8,8 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    uniqueIdString: string;
+    createdAt: string;
 }
 
 export interface RegisterData {
