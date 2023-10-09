@@ -8,12 +8,33 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [nameError, setNameError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [passwordConfirmationError, setPasswordConfirmationError] = useState("");
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [isNameDirty, setIsNameDirty] = useState(false);
+    const [isEmailDirty, setIsEmailDirty] = useState(false);
+    const [isPasswordDirty, setIsPasswordDirty] = useState(false);
+    const [isPasswordConfirmationDirty, setIsPasswordConfirmationDirty] = useState(false);
+
+
+    const isNameValid = (name: string) => {
+        return name.length >= 2;
+    }
+
+    const checkName = (name: string) => {
+        if (!isNameValid(name)) {
+            setNameError("Name must be at least 2 characters");
+            return false;
+        } else {
+            setNameError("");
+            return true;
+        }
+    }
 
     const isValidEmail = (email: string) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        return /^[^\s@]+@[^\s@]+\.[^\s@][^\s@]+$/.test(email);
     };
 
     const checkEmail = (email: string) => {
@@ -56,12 +77,12 @@ export default function Register() {
 
     useEffect(() => {
         console.log('Register mount');
-        
+        setIsFormValid(isNameValid(name) && isValidEmail(email) && isValidPassword(password) && isValidPasswordConfirmation(password, passwordConfirmation));
         return () => {
             console.log('Register unmount');
         }
     }
-    , [email, password, passwordConfirmation]);
+        , [name, email, password, passwordConfirmation]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -70,23 +91,59 @@ export default function Register() {
 
         switch (name) {
             case "name":
-              setName(value);
-              break;
+                setName(value);
+                if (isNameDirty) {
+                    checkName(value);
+                }
+                break;
             case "email":
-              setEmail(value);
-              checkEmail(email);
-              break;
+                setEmail(value);
+                if (isEmailDirty) {
+                    checkEmail(value);
+                }
+                break;
             case "password":
-              setPassword(value);
-              checkPassword(value);
-              break;
+                setPassword(value);
+                if (isPasswordDirty) {
+                    checkPassword(value);
+                }
+                break;
             case "passwordConfirmation":
                 setPasswordConfirmation(value);
-                checkPasswordConfirmation(password, value);
-              break;
+                if (isPasswordConfirmationDirty) {
+                    checkPasswordConfirmation(password, value);
+                }
+                break;
             default:
-              break;
-          }
+                break;
+        }
+    };
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        console.log(name, value);
+        // setName(prevState => ({ value }));
+
+        switch (name) {
+            case "name":
+                checkName(value);
+                setIsNameDirty(true);
+                break;
+            case "email":
+                checkEmail(value);
+                setIsEmailDirty(true);
+                break;
+            case "password":
+                checkPassword(value);
+                setIsPasswordDirty(true);
+                break;
+            case "passwordConfirmation":
+                checkPasswordConfirmation(password, value);
+                setIsPasswordConfirmationDirty(true);
+                break;
+            default:
+                break;
+        }
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -103,7 +160,7 @@ export default function Register() {
             <Card sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} variant="outlined">
 
                 <form onSubmit={handleSubmit}>
-                    <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap:1}}>
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 1 }}>
 
                         <Typography variant="h4" align="center" gutterBottom>
                             Register
@@ -115,6 +172,9 @@ export default function Register() {
                             name="name"
                             value={name}
                             onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            error={Boolean(nameError)}
+                            helperText={nameError}
                         />
                         <TextField
                             label="Email"
@@ -123,6 +183,7 @@ export default function Register() {
                             name="email"
                             value={email}
                             onChange={handleInputChange}
+                            onBlur={handleBlur}
                             error={Boolean(emailError)}
                             helperText={emailError}
                         />
@@ -134,6 +195,7 @@ export default function Register() {
                             value={password}
                             type="password"
                             onChange={handleInputChange}
+                            onBlur={handleBlur}
                             error={Boolean(passwordError)}
                             helperText={passwordError}
                         />
@@ -145,10 +207,11 @@ export default function Register() {
                             value={passwordConfirmation}
                             type="password"
                             onChange={handleInputChange}
+                            onBlur={handleBlur}
                             error={Boolean(passwordConfirmationError)}
                             helperText={passwordConfirmationError}
                         />
-                        <Button variant="contained" color="primary" type="submit" disabled={"true"}>
+                        <Button variant="contained" color="primary" type="submit" disabled={!isFormValid}>
                             Register
                         </Button>
                         <Button variant="outlined" onClick={handleGoBackClick}>
