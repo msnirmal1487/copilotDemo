@@ -1,8 +1,8 @@
 
 const fs = require('fs');
 import * as crypto from 'crypto';
-import { format } from "date-fns";
 
+const FILE_PATH = './server/users.json';
 export const DATE_FORMAT: string = 'yyyy/MM/dd HH:mm:ss z';
 
 export interface UserFile {
@@ -26,19 +26,28 @@ export interface LoginData {
 interface AuthService { 
     register(user: User): void;
     login(email: string, password: string): User | undefined;
+    getUserByUniqueId(id: string): User | undefined;
 }
 
 export const authService: AuthService = {
     register,
-    login
+    login,
+    getUserByUniqueId
 };
 
-function readUsers(): UserFile | null {
-    const filePath = './server/users.json';
-    if (!fs.existsSync(filePath)) {
-        return null;
+function createUserFile(): void {
+    const userFile: UserFile = {
+        users: []
+    };
+    const data = JSON.stringify(userFile);
+    fs.writeFileSync(FILE_PATH, data);
+};
+
+function readUsers(): UserFile | undefined {
+    if (!fs.existsSync(FILE_PATH)) {
+        createUserFile();
     }
-    const data = fs.readFileSync(filePath, 'utf8');
+    const data = fs.readFileSync(FILE_PATH, 'utf8');
     const users = JSON.parse(data);
     return users;
 };
@@ -54,7 +63,7 @@ function register(user: User): User | undefined {
     if(index !== -1) {
         return undefined;
     }
-    user.createdAt = format(new Date(), DATE_FORMAT);
+    user.createdAt = new Date().toISOString();
     let uniqueId = crypto.randomBytes(16).toString('hex');
     while(users.findIndex((u: User) => { return u.uniqueIdString === uniqueId; }) >= 0){
         uniqueId = crypto.randomBytes(16).toString('hex');
@@ -65,18 +74,28 @@ function register(user: User): User | undefined {
 
     users.push(user);
     const data = JSON.stringify(userFile);
-    fs.writeFileSync('./server/users.json', data);
+    fs.writeFileSync(FILE_PATH, data);
     return user;
 };
 
 function login(email: string, password: string): User | undefined {
     const userFile = readUsers();
-    console.log(userFile);
     if (!userFile) {
         return undefined;
     }
     const users = userFile.users;
     return users.find((user: User) => {
         return user.email === email && user.password === password;
+    });
+};
+
+function getUserByUniqueId(id: string): User | undefined {
+    const userFile = readUsers();
+    if (!userFile) {
+        return undefined;
+    }
+    const users = userFile.users;
+    return users.find((user: User) => {
+        return user.uniqueIdString === id;
     });
 };
